@@ -38,28 +38,7 @@ async function main() {
                 });
             }
         });
-        // 百度七日热点
-        await page.goto(bdWeekUrl);
-        await page
-            .mainFrame()
-            .addScriptTag({
-                url: 'https://cdn.bootcss.com/jquery/3.2.0/jquery.min.js'
-            })
-        let bdWeekHot = await page.evaluate(getBdHot);
-        if (bdWeekHot.length > 0) {
-            fs.writeFileSync(path.resolve(__dirname, './百度七日热点.json'), JSON.stringify(bdWeekHot, null, 2));
-        }
-        // 百度今日热点
-        await page.goto(bdTodayUrl);
-        await page
-            .mainFrame()
-            .addScriptTag({
-                url: 'https://cdn.bootcss.com/jquery/3.2.0/jquery.min.js'
-            })
-        let bdToadyHot = await page.evaluate(getBdHot);
-        if (bdToadyHot.length > 0) {
-            fs.writeFileSync(path.resolve(__dirname, './百度今日热点.json'), JSON.stringify(bdToadyHot, null, 2));
-        }
+
         // 百度实时热点
         await page.goto(bdTimeUrl);
         await page
@@ -70,8 +49,8 @@ async function main() {
         let bdTimeHot = await page.evaluate(getBdHot);
         console.log(bdTimeHot)
         if (bdTimeHot.length > 0) {
-            console.log(path.resolve(__dirname, './百度实时热点.json'))
-            fs.writeFileSync(path.resolve(__dirname, './百度实时热点.json'), JSON.stringify(bdTimeHot, null, 2));
+            console.log(path.resolve(__dirname, './百度实时热点1.json'))
+            fs.writeFileSync(path.resolve(__dirname, './百度实时热点1.json'), JSON.stringify(bdTimeHot, null, 2));
         }
         console.log('-------爬取成功--------');
         await page.close();
@@ -85,12 +64,12 @@ async function main() {
 };
 function getBdHot() {
     let result = []
-    $('.list-table tbody tr:not(:first-child)').each(function () {
-        if ($(this).find('.keyword .list-title').html()) {
+    $('#sanRoot > main > div.container.right-container_2EFJr > div > div:nth-child(2) > div').each(function () {
+        if ($(this).find('div.content_1YWBm > a').html()) {
             result.push({
-                rank: $(this).find('.num-top').html() ? $(this).find('.num-top').html() : $(this).find('.num-normal').html(),
-                keyword: $(this).find('.keyword .list-title').html(),
-                href: $(this).find('.keyword .list-title').attr('href'),
+                rank: $(this).find('div.trend_2RttY.hide-icon > div.hot-index_1Bl1a').text(),
+                keyword: $(this).find('div.content_1YWBm > a').text(),
+                href: $(this).find('div.content_1YWBm > a').attr('href'),
             })
         }
 
